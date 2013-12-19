@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset=utf-8 />
+        <title>Cross-browser event delegation with vanilla JS</title>
+        <style>
+            .forkme {
+                position: absolute;
+                position: fixed;
+                top: 0;
+                left: 0;
+                border: 0;
+                z-index: 9999;
+            }
+
+            body {
+                font-family: Arial, sans-serif;
+            }
+
+            #clickcontainer {
+                width: 500px;
+                margin: 0 auto;
+                background: #ccc;
+                padding: 20px;
+                border: 1px solid #000;
+            }
+
+            #clickcontainer:before,
+            #clickcontainer:after {
+                content: " "; /* 1 */
+                display: table; /* 2 */
+            }
+
+            #clickcontainer:after {
+                clear: both;
+            }
+
+            p {
+                text-align: center;
+                font-weight: bold;
+            }
+
+            h1 {
+                font-weight: normal;
+                text-align: center;  
+            }
+
+            form {
+                max-width: 500px;
+                margin: 0 auto;
+                border: 1px solid #000;
+            }
+
+            form div {
+                overflow: hidden;
+                padding: 10px;
+                border: 1px solid #000;
+            }
+
+            input {
+                padding: 5px 0;
+            }
+
+            label {
+                float: left;
+                margin-right: 20px;
+                width: 100px;
+                text-align: right;
+            }
+
+            .submit {
+                text-align: center;
+            }
+
+            .submit input {
+                padding: 0 10px;
+            }
+
+            output {
+                font-weight: normal;
+            }
+
+            .box {
+                width: 100px;
+                height: 100px;
+                background: aquamarine;
+                float: left;
+                margin-right: 20px;
+            }
+
+            .box2 {
+                width: 100px;
+                height: 100px;
+                background: goldenrod;
+                float: left;
+            }
+
+            @media screen and (max-width: 530px) {
+                #clickcontainer {
+                    width: auto;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <a class="forkme" href="https://github.com/jslegers/event-delegation"><img src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+        <div id="clickcontainer" data-input="the container">
+            <h1 tabindex="1" data-input="the heading">Click any Element</h1>
+            <form id="form" data-input="the form">
+                <div data-input="the name field wrapper">
+                    <label for="name">Name: </label><input type="text" id="name" data-input="the name field" tabindex="2">
+                </div>
+                <div data-input="the email field wrapper">
+                    <label for="email">Email: </label><input type="email" id="email" data-input="the email field" tabindex="3">
+                </div>
+                <div data-input="the question field wrapper">
+                    <label for="question">Question: </label><textarea id="question" rows="10" data-input="the question field" tabindex="4"></textarea>
+                </div>
+                <div data-input="the button wrapper" class="submit">
+                    <input type="submit" id="btn" data-input="the button" tabindex="5">
+                </div>       
+            </form>
+            <p data-input="this paragraph">Click event was triggered by: <output data-input="this output field" id="op">[none]</output></p>
+
+            <div class="box" data-input="the first box" tabindex="6"></div>
+            <div class="box2" data-input="the second box" tabindex="7"></div>
+        </div>
+        <script type="text/javascript">
+            var
+                    clickcontainer = document.getElementById('clickcontainer'),
+                    output = document.getElementById('op');
+
+            clickcontainer.addEventListener('click', function(e) {
+                var target = e.target || e.srcElement;
+                output.innerHTML = target.getAttribute('data-input');
+                e.stopPropagation();
+            }, false);
+
+            document.addEventListener('click', function(e) {
+                output.innerHTML = 'an element outside this container';
+            }, false);
+
+            document.getElementById('btn').addEventListener('click', function(e) {
+                e.preventDefault();
+            });
+        </script>
+    </body>
+</html>
